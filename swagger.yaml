@@ -1,120 +1,189 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
-  version: '1.0'
-  title: "sartori-luglio-SE2"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  version: 1.0.0
+  title: "Russia2018"
+  description: API to manage Russia2018 teams and matches' results
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: Damiano Sartori
+    email: damiano.sartori@studenti.unitn.com
+    #url: 
   license:
-    name: MIT
-    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
-host: polls.apiblueprint.org
+    name: UNLICENSED
+#host: trentose2jan12-178052.herokuapp.com
 basePath: /
 schemes:
-- http
+  - http
 consumes:
-- application/json
+  - application/json
 produces:
-- application/json
+  - application/json
 paths:
-  /questions:
-    x-summary: Questions Collection
+  /teams:
     get:
-      summary: List All Questions
+      description: |
+        Return all the teams that have been saved.
+      operationId: getTeams
       responses:
         200:
-          description: Successful Response
+          description: get all saved teams
           schema:
             type: array
             items:
-              $ref: '#/definitions/Question'
-          examples:
-            application/json:
-              - question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 2048
-                  - choice: Python
-                    votes: 1024
-                  - choice: Objective-C
-                    votes: 512
-                  - choice: Ruby
-                    votes: 256
+              $ref: '#/definitions/Teams'
     post:
-      description: >-
-        You may create your own question using this action. It takes a JSON
-        object containing a question and a collection of answers in the
-        form of choices.
-      summary: Create a New Question
+      description: |
+        Insert a new team
+      operationId: addTeam
       parameters:
-        - name: body
+        - name: team
           in: body
           required: true
           schema:
-            $ref: '#/definitions/QuestionRequest'
+            $ref: '#/definitions/Teams'
+            example: {
+              "teamID": "ENG", 
+              "name": "England",
+              "is_still_in": true,
+              "matches": [{"Colombia", "W"}]
+            }
       responses:
-        201:
-          description: ''
-          schema:
-            $ref: '#/definitions/Question'
-          examples:
-            application/json:
-                question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 0
-                  - choice: Python
-                    votes: 0
-                  - choice: Objective-C
-                    votes: 0
-                  - choice: Ruby
-                    votes: 0
-definitions:
-  Question:
-    title: Question
-    type: object
-    properties:
-      question:
-        type: string
-      published_at:
-        type: string
-      choices:
-        type: array
-        items:
-          $ref: '#/definitions/Choice'
-    required:
-      - question
-      - published_at
-      - choices
-  Choice:
-    title: Choice
-    type: object
-    properties:
-      votes:
-        type: integer
-        format: int32
-      choice:
-        type: string
-    required:
-      - votes
-      - choice
-  QuestionRequest:
-    title: Question Request
-    type: object
-    properties:
-      question:
-        type: string
-      choices:
-        type: array
-        items:
+        200:
+          description: Team has been saved to the list
+  /teams/{id}:
+    get:
+      description: |
+        Return the team with the passed teamID.
+      operationId: findTeamByID
+      parameters:
+        - name: id
+          in: path
+          required: true
           type: string
+          x-example: 'CRO'
+      responses:
+        200:
+          description: get by ID response
+          schema:
+            $ref: '#/definitions/Teams'
+        404:
+          description: Unable to find team with the specified ID
+    put:
+      description: |
+        Update the team with the passed teamID.
+      operationId: updateTeamByID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          x-example: 'idA57'
+        - name: team
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Teams'
+            example: {
+              "teamID": "ENG", 
+              "name": "England",
+              "is_still_in": true,
+              "matches": [{"opponent":"Colombia", "outcome":"W"}]
+            }
+      responses:
+        200:
+          description: update assignment
+          schema:
+            $ref: '#/definitions/Teams'
+        404:
+          description: Unable to find team with the specified ID
+  /matches/{id}:
+    get:
+      description: |
+        Return all the matches for a specified team.
+      operationId: getMatchesByTeamID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          x-example: 'CRO'
+      responses:
+        200:
+          description: get all matches of a team
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CupMatches'
+        404:
+          description: Unable to find team with the specified ID
+    post:
+      description: |
+        Insert a new match for a specified team
+      operationId: addMatchToTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          x-example: "BEL"
+        - name: match
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CupMatches'
+            example: {
+              "opponent": "BRA", 
+              "outcome": "W"
+            }
+      responses:
+        200:
+          description: Match has been saved to the list
+    put:
+      description: |
+        Update a match for a specified team
+      operationId: updateMatch
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          x-example: "BEL"
+        - name: match
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CupMatches'
+            example: {
+              "opponent": "BRA", 
+              "outcome": "W"
+            }
+      responses:
+        200:
+          description: Match has been updated
+        404:
+          description: Unable to find team or matches with the specified ID
+definitions:
+  Teams:
     required:
-      - question
-      - choices
-    example:
-      question: Favourite programming language?
-      choices:
-        - Swift
-        - Python
-        - Objective-C
-        - Ruby
+      - teamID
+      - name
+      - is_still_in
+      - matches
+    properties:
+      teamID:
+        type: string
+      name:
+        type: string
+      is_still_in:
+        type: boolean
+      matches:
+        $ref: '#/definitions/CupMatches'
+  CupMatches:
+    required:
+      - opponentName
+      - outcome
+    properties:
+      opponent:
+        type: string
+      outcome:
+        type: string
