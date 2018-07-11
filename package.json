@@ -1,0 +1,23 @@
+{
+  "name": "sartori-luglio-se2",
+  "version": "1.0.0",
+  "description": "SE2 exampe dealing with Russia 2018 World Cup",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DAS-96/sartori-luglio-SE2.git"
+  },
+  "author": "Damiano Sartori",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/DAS-96/sartori-luglio-SE2/issues"
+  },
+  "homepage": "https://github.com/DAS-96/sartori-luglio-SE2#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  }
+}
