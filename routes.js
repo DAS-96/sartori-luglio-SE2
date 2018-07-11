@@ -9,7 +9,7 @@ var teams = [
 function routes (app) {
 
     app.route("/").get(function(req,res){
-        res.status(200).send("Welcome to RUSSIA 2018 World CUP")
+        res.status(200).send("Welcome to RUSSIA 2018 World CUP");
     });
 
 	app.route('/teams')
