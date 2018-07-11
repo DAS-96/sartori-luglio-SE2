@@ -10,7 +10,7 @@ info:
     #url: 
   license:
     name: UNLICENSED
-#host: trentose2jan12-178052.herokuapp.com
+host: sartori-luglio-se2.herokuapp.com
 basePath: /
 schemes:
   - http
@@ -45,7 +45,7 @@ paths:
               "teamID": "ENG", 
               "name": "England",
               "is_still_in": true,
-              "matches": [{"Colombia", "W"}]
+              "matches": [{"opponent":"Colombia", "outcome":"W"}]
             }
       responses:
         200:
@@ -77,7 +77,7 @@ paths:
           in: path
           required: true
           type: string
-          x-example: 'idA57'
+          x-example: 'ENG'
         - name: team
           in: body
           required: true
@@ -91,37 +91,18 @@ paths:
             }
       responses:
         200:
-          description: update assignment
+          description: update teams
           schema:
             $ref: '#/definitions/Teams'
         404:
           description: Unable to find team with the specified ID
-  /matches/{id}:
-    get:
-      description: |
-        Return all the matches for a specified team.
-      operationId: getMatchesByTeamID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          x-example: 'CRO'
-      responses:
-        200:
-          description: get all matches of a team
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/CupMatches'
-        404:
-          description: Unable to find team with the specified ID
+  /teams/{idT}/matches:
     post:
       description: |
         Insert a new match for a specified team
       operationId: addMatchToTeam
       parameters:
-        - name: id
+        - name: idT
           in: path
           required: true
           type: string
@@ -132,29 +113,59 @@ paths:
           schema:
             $ref: '#/definitions/CupMatches'
             example: {
-              "opponent": "BRA", 
+              "opponent": "Brazil", 
               "outcome": "W"
             }
       responses:
         200:
           description: Match has been saved to the list
+        404:
+          description: Unable to find team with the specified ID
+  /teams/{idT}/matches/{idM}:
+    get:
+      description: |
+        Return a specific match for a specified team.
+      operationId: getMatchByTeamID
+      parameters:
+        - name: idT
+          in: path
+          required: true
+          type: string
+          x-example: 'CRO'
+        - name: idM
+          in: path
+          required: true
+          type: string
+          x-example: 'England'
+      responses:
+        200:
+          description: get a particular match of a team
+          schema:
+              $ref: '#/definitions/CupMatches'
+        404:
+          description: Unable to find team or matches with the specified ID
     put:
       description: |
-        Update a match for a specified team
+        Update a specific match for a specified team
       operationId: updateMatch
       parameters:
-        - name: id
+        - name: idT
           in: path
           required: true
           type: string
           x-example: "BEL"
+        - name: idM
+          in: path
+          required: true
+          type: string
+          x-example: "Brazil"
         - name: match
           in: body
           required: true
           schema:
             $ref: '#/definitions/CupMatches'
             example: {
-              "opponent": "BRA", 
+              "opponent": "Brazil", 
               "outcome": "W"
             }
       responses:
@@ -180,7 +191,7 @@ definitions:
         $ref: '#/definitions/CupMatches'
   CupMatches:
     required:
-      - opponentName
+      - opponent
       - outcome
     properties:
       opponent:
