@@ -92,4 +92,19 @@ function routes (app) {
         });
 };
 
+function resultCount (name, outcome) {
+    var count = 0;
+    for(var i = 0; i < teams.length; i++){
+        if (teams[i].name == name) {
+            for(var j = 0; j < teams[i].matches.length; j++){
+                if(teams[i].matches[j].outcome == outcome){
+                    count++;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
 exports.routes = routes;
